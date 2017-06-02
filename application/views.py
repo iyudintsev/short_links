@@ -15,11 +15,11 @@ class IndexView(views.View):
         form = GenerateShortUrlForm(request.form)
         if request.method == "POST":
             if form.validate_on_submit():
-                service.create_link(url=form.url.data)
+                service.create_request(url=form.url.data)
                 return redirect(url_for('index'))
             else:
                 flash('Invalid Url')
-        data = service.get_all_links()
+        data = map(lambda r: r.link, service.get_last_requests())
         return render_template('index.html', form=form, data=data)
 
 

@@ -1,6 +1,6 @@
 import short_url
 from contextlib import contextmanager
-from application.models import Links
+from application.models import Links, Requests
 from sqlalchemy.orm.exc import NoResultFound
 
 
@@ -16,31 +16,37 @@ def db_action(app_session):
 
 class Service(object):
     def __init__(self, session):
-        self.repository = LinkRepository(session)
+        self.link_service = LinkService(session)
+        self.request_service = RequestService(session)
 
-    def create_link(self, url):
-        link = self.repository.get_by_url(url)
+    def create_request(self, url):
+        link = self.get_link(url)
+        self.request_service.add(link)
+
+    def get_link(self, url):
+        link = self.link_service.get_by_url(url)
         if not link:
-            link = self.repository.add(url)
+            link = self.link_service.add(url)
 
-        if not link.hash:
-            with db_action(self.repository.session):
+            with db_action(self.link_service.session):
                 link.hash = short_url.encode_url(link.id)
 
+        return link
+
     def get_link_by_hash(self, hash_):
-        return self.repository.get_by_hash(hash_=hash_)
+        return self.link_service.get_by_hash(hash_=hash_)
 
-    def get_all_links(self):
-        return self.repository.get_all()
+    def get_last_requests(self):
+        return self.request_service.get_all(limit=5)
 
 
-class LinkRepository(object):
+class LinkService(object):
     def __init__(self, session):
         self.session = session
 
     def add(self, url):
-        link = Links(url)
         with db_action(self.session):
+            link = Links(url)
             self.session.add(link)
         return link
 
@@ -56,5 +62,18 @@ class LinkRepository(object):
         except NoResultFound:
             return None
 
-    def get_all(self):
-        return self.session.query(Links).order_by(Links.id.desc()).all()
+
+class RequestService(object):
+    def __init__(self, session):
+        self.session = session
+
+    def add(self, link):
+        with db_action(self.session):
+            request = Requests(link)
+            self.session.add(request)
+
+    def get_all(self, limit):
+        try:
+            return self.session.query(Requests).order_by(Requests.id.desc()).limit(limit=limit).all()
+        except NoResultFound:
+            return None

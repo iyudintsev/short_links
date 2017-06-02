@@ -10,8 +10,8 @@
         <dd>
             <li>
                 <a href="{{ url_for('send', hash_=d.hash) }}">{{ url_for('send', hash_=d.hash, _external=True) }}</a>
-                <a href="{{ d.url }}">{{ d.url }}</a>
             </li>
+            <a href="{{ d.url }}">{{ d.url }}</a>
         </dd>
     {% endfor %}
 {% endblock %}

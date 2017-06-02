@@ -1,2 +1,2 @@
-"# short_links" 
-# short_links
+run: python main.py
+config: application/config.py

@@ -39,6 +39,9 @@ class Service(object):
     def get_last_requests(self):
         return self.request_service.get_all(limit=5)
 
+    def prepare_url(self, url):
+        return url.strip()
+
 
 class LinkService(object):
     def __init__(self, session):

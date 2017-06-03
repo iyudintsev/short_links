@@ -6,12 +6,14 @@
             <dd>{{ form.url(size=20)}}
             <dd><input type="submit" value="Generate">
     </form>
+    <br>
     {% for d in data %}
         <dd>
             <li>
                 <a href="{{ url_for('send', hash_=d.hash) }}">{{ url_for('send', hash_=d.hash, _external=True) }}</a>
             </li>
             <a href="{{ d.url }}">{{ d.url }}</a>
+            <br><br>
         </dd>
     {% endfor %}
 {% endblock %}

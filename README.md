@@ -8,4 +8,4 @@ At the initial stage, it could be run on the localhost. The detailed information
 
 You should use the command `python main.py` for the execution of the application.
 
-At the initial stage, the application can be executed on (localhost:8080)[http://localhost:8080].`
+At the initial stage, the application can be executed on [localhost:8080](http://localhost:8080).`
